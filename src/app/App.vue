@@ -19,7 +19,10 @@ const { state, containerRef, onNext } = useAnimation();
           'card',
           `card-${i}`
         ]"
-        :style="[`background-image: url(${v.img})`]"
+        :style="[
+          `background-image: url(${v.img})`,
+          i !== state.active ? 'box-shadow: 6px 6px 10px 2px rgba(0, 0, 0, 0.6)' : ''
+        ]"
       />
       <VPager @next="onNext" />
     </main>
@@ -48,6 +51,7 @@ const { state, containerRef, onNext } = useAnimation();
   position: relative;
   z-index: 1;
   overflow: hidden;
+  filter: blur(0);
 }
 
 
@@ -56,7 +60,6 @@ const { state, containerRef, onNext } = useAnimation();
   background-position: center;
   background-size: cover;
   border-radius: 16px;
-  box-shadow: 6px 6px 10px 2px rgba(0, 0, 0, 0.6);
   z-index: -1;
 }
 </style>

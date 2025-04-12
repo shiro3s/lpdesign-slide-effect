@@ -24,9 +24,9 @@ export const data = [
 ];
 
 const card = {
-	width: 200,
-	height: 300,
-	gap: 40,
+	width: 90,
+	height: 140,
+	gap: 20,
 };
 
 export const useAnimation = () => {
@@ -35,19 +35,20 @@ export const useAnimation = () => {
     active: number,
     width: number;
     height: number;
+    top: number;
+    left: number;
     order: number[]
   }>({
 		active: 0,
     width: 0,
     height: 0,
+    top: 0,
+    left: 0,
     order: []
 	});
 
 	const onNext = () => {
     state.order.push(state.order.shift() as number);
-
-		const offsetLeft = state.width - 1160;
-		const offsetTop = state.height - 360;
 
     const prev = state.active;
     state.active += 1
@@ -61,10 +62,10 @@ export const useAnimation = () => {
       width: state.width,
       height: state.height,
       onComplete: () => {
-        const newPositionX = offsetLeft + 200 + (data.length -1) * (card.width + card.gap);
+        const newPositionX = state.left + 180 + (data.length -1) * (card.width + card.gap);
         gsap.to(`.card-${prev}`, {
           x: newPositionX,
-          y: offsetTop,
+          y: state.top,
           width: card.width,
           height: card.height,
           borderRadius: 10,
@@ -77,10 +78,10 @@ export const useAnimation = () => {
     state.order.forEach((i, index) => {
       if (i === state.active) return
       if (i !== prev) {
-        const newPositionX = offsetLeft + index * (card.width + card.gap);
+        const newPositionX = state.left + 180 + index * (card.width + card.gap);
         gsap.to(`.card-${i}`, {
           x: newPositionX,
-          y: offsetTop,
+          y: state.top,
           width: card.width,
           height: card.height,
           ease: "sine.inOut",
@@ -99,8 +100,8 @@ export const useAnimation = () => {
         state.width = inlineSize
         state.height = blockSize
 
-				const offsetTop = state.height - 360;
-				const offsetLeft = state.width - 1160;
+				state.top = state.height - 180;
+				state.left = state.width - 840;
 
 				gsap.set(`.card-${state.active}`, {
 					x: 0,
@@ -109,16 +110,17 @@ export const useAnimation = () => {
 					height: blockSize,
 				});
 
-				for (let i = 1; i < data.length; i++) {
-					gsap.set(`.card-${i}`, {
-						x: offsetLeft + 200 + i * (card.width + card.gap),
-						y: offsetTop,
+        state.order.forEach((i, index) => {
+          if (i === state.active) return
+          gsap.set(`.card-${i}`, {
+						x: state.left + 180 + index * (card.width + card.gap),
+						y: state.top,
 						width: card.width,
 						height: card.height,
 						zIndex: 30,
 						borderRadius: 10,
 					});
-				}
+        })
 			}
 		}
 	});
