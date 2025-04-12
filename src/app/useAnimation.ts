@@ -33,14 +33,52 @@ export const useAnimation = () => {
 	const containerRef = ref<HTMLElement>();
 	const state = reactive({
 		active: 0,
+    width: 0,
+    height: 0,
 	});
+
+	const onNext = () => {
+		const offsetLeft = state.width - 1280;
+		const offsetTop = state.height - 360;
+
+    const prev = state.active;
+
+    state.active += 1
+    if (state.active > data.length -1) state.active = 1
+
+    console.log(state.active)
+
+    gsap.to(`.card-${state.active}`, {
+      x: 0,
+      y: 0,
+      ease: "sine.inOut",
+      width: state.width,
+      height: state.height,
+      onComplete: () => {
+        const newPositionX = offsetLeft + (data.length - 1) * (card.width + card.gap)
+        gsap.to(`.card-${prev}`, {
+          x: newPositionX,
+          y: offsetTop,
+          width: card.width,
+          height: card.height,
+          borderRadius: 10,
+          zIndex: 30,
+          scale: 1
+        })
+      }
+    })
+	};
 
 	const observer = new ResizeObserver((entries) => {
 		for (const entry of entries) {
 			if (entry.devicePixelContentBoxSize.length) {
 				const { blockSize, inlineSize } = entry.devicePixelContentBoxSize[0];
-				const offsetTop = blockSize - 360;
-				const offsetLeft = inlineSize - 1280;
+
+        state.width = inlineSize
+        state.height = blockSize
+
+				const offsetTop = state.height - 360;
+				const offsetLeft = state.width - 1280;
 
 				gsap.set(`.card-${state.active}`, {
 					x: 0,
@@ -57,7 +95,6 @@ export const useAnimation = () => {
 						height: card.height,
 						zIndex: 30,
 						borderRadius: 10,
-            
 					});
 				}
 			}
@@ -79,5 +116,6 @@ export const useAnimation = () => {
 	return {
 		state,
 		containerRef,
+		onNext,
 	};
 };

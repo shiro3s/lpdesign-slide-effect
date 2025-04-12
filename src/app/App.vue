@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import VHeader from "@/components/header/VHeader.vue";
+import VPager from "@/components/pager/VPager.vue"
 
 import { data, useAnimation } from "./useAnimation";
 
-const { state, containerRef } = useAnimation();
+const { state, containerRef, onNext } = useAnimation();
 </script>
 
 <template>
@@ -20,7 +21,7 @@ const { state, containerRef } = useAnimation();
         ]"
         :style="[`background-image: url(${v.img})`]"
       />
-      
+      <VPager @next="onNext" />
     </main>
 </div>
 
